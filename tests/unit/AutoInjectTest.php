@@ -48,6 +48,11 @@ class AutoInjectTest extends TestCase
         $this->assertSame('<html><head><title>Page</title></head><body></body></html>', $this->renderedPage('page'));
     }
 
+    public function testItLeavesATemplateWithNoHeadAlone(): void
+    {
+        $this->assertSame('{"title": "Page"}', $this->renderedPage('data'));
+    }
+
     public function testItLeavesControlPanelPagesAlone(): void
     {
         Event::on(View::class, View::EVENT_REGISTER_CP_TEMPLATE_ROOTS, function (RegisterTemplateRootsEvent $event): void {
