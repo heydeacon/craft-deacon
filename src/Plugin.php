@@ -24,7 +24,7 @@ class Plugin extends BasePlugin
 
         Craft::$app->getView()->registerTwigExtension(new Extension());
 
-        Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event): void {
+        Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, function(TemplateEvent $event): void {
             if ($event->templateMode === View::TEMPLATE_MODE_SITE && $this->getSettings()->addToEveryPage) {
                 $this->addTagToPage($event);
             }

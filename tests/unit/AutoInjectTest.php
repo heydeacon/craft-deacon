@@ -55,7 +55,7 @@ class AutoInjectTest extends TestCase
 
     public function testItLeavesControlPanelPagesAlone(): void
     {
-        Event::on(View::class, View::EVENT_REGISTER_CP_TEMPLATE_ROOTS, function (RegisterTemplateRootsEvent $event): void {
+        Event::on(View::class, View::EVENT_REGISTER_CP_TEMPLATE_ROOTS, function(RegisterTemplateRootsEvent $event): void {
             $event->roots['deacon-test'] = CRAFT_TEMPLATES_PATH;
         });
 

@@ -130,7 +130,7 @@ class WidgetFunctionTest extends TestCase
     /**
      * @dataProvider wrongContexts
      */
-    public function testItRefusesAContextThatIsntNamesToStringsNumbersOrBooleans(mixed $context): void
+    public function testItRefusesAContextWhoseValuesArentStringsNumbersOrBooleans(mixed $context): void
     {
         $settings = Plugin::getInstance()->getSettings();
         $settings->key = 'pk_test123';
@@ -139,7 +139,7 @@ class WidgetFunctionTest extends TestCase
         $this->assertSame(
             [
                 InvalidConfigException::class,
-                'craft-deacon: context in config/deacon.php must be an array of names to strings, numbers or booleans.',
+                'craft-deacon: context in config/deacon.php must be an array whose values are strings, numbers or booleans.',
             ],
             $this->renderingError(),
         );
@@ -178,7 +178,7 @@ class WidgetFunctionTest extends TestCase
     {
         Plugin::getInstance()->getSettings()->key = $key;
 
-        $this->assertSame(['', [self::MISSING_KEY]], [$this->renderedFunction(), $this->loggedWarnings()]);
+        $this->assertSame(['', [self::MISSING_KEY]], [$this->renderedFunction(), $this->loggedMessages()]);
     }
 
     /**
@@ -187,7 +187,7 @@ class WidgetFunctionTest extends TestCase
      *
      * @return list<string>
      */
-    private function loggedWarnings(): array
+    private function loggedMessages(): array
     {
         $messages = [];
 

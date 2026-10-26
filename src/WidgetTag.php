@@ -23,7 +23,7 @@ final class WidgetTag
      * The tag, with the key from the settings, or from DEACON_KEY when they have none. With no
      * key it is empty and a warning is logged, so a missing setting never takes a page down.
      *
-     * @throws InvalidConfigException when config/deacon.php gives an option of the wrong type
+     * @throws InvalidConfigException when config/deacon.php gives a context of the wrong type
      */
     public static function html(Settings $settings): string
     {
@@ -41,7 +41,7 @@ final class WidgetTag
 
         if ($settings->context !== null && !self::isContext($settings->context)) {
             throw new InvalidConfigException(
-                'craft-deacon: context in config/deacon.php must be an array of names to strings, numbers or booleans.'
+                'craft-deacon: context in config/deacon.php must be an array whose values are strings, numbers or booleans.'
             );
         }
 
@@ -80,7 +80,7 @@ final class WidgetTag
      * The tag Install gives, with any of its other attributes between the key and async. An
      * attribute that is true is written with no value, as async is.
      *
-     * @param  array<string, string|true>  $attributes
+     * @param array<string, string|true> $attributes
      */
     private static function loaderTag(array $attributes): string
     {
