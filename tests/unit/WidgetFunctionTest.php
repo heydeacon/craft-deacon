@@ -8,6 +8,7 @@ use craft\web\View;
 use heydeacon\deacon\models\Settings;
 use heydeacon\deacon\Plugin;
 use UnitTester;
+use Codeception\Lib\Connector\Yii2\Logger;
 
 class WidgetFunctionTest extends TestCase
 {
@@ -15,6 +16,7 @@ class WidgetFunctionTest extends TestCase
 
     protected function _before(): void
     {
+        $this->testLogger()->getAndClearLog();
         $this->setEnvironmentKey(null);
         Plugin::getInstance()->getSettings()->setAttributes((new Settings())->getAttributes(), false);
     }
@@ -57,6 +59,60 @@ class WidgetFunctionTest extends TestCase
         } finally {
             unset($_SERVER['STAGING_DEACON_KEY']);
         }
+    }
+
+    private const MISSING_KEY = 'craft-deacon: the key is missing, so the page has no Deacon widget. Set '
+        .'DEACON_KEY in .env, or the key in Settings → Plugins → Deacon. In Deacon, open Install (the '
+        .'button at the top of the dashboard) and copy the data-key value from the snippet. It starts with pk_.';
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function missingKeys(): array
+    {
+        return [
+            'empty' => [''],
+            'blank' => ['   '],
+            'a variable that is not set' => ['$UNSET_DEACON_KEY'],
+        ];
+    }
+
+    /**
+     * @dataProvider missingKeys
+     */
+    public function testItPrintsNothingAndLogsAWarningWhenTheKeyIsMissing(string $key): void
+    {
+        Plugin::getInstance()->getSettings()->key = $key;
+
+        $this->assertSame(['', [self::MISSING_KEY]], [$this->renderedFunction(), $this->loggedWarnings()]);
+    }
+
+    /**
+     * What was logged in the plugin's category while the test ran. Codeception's logger keeps
+     * the last few messages as lines like "[deacon] 'the message'".
+     *
+     * @return list<string>
+     */
+    private function loggedWarnings(): array
+    {
+        $messages = [];
+
+        foreach (explode(PHP_EOL, $this->testLogger()->getAndClearLog()) as $line) {
+            if (str_starts_with($line, "[deacon] '") && str_ends_with($line, "'")) {
+                $quoted = substr($line, strlen("[deacon] '"), -1);
+                $messages[] = preg_replace('/\\\\([\'\\\\])/', '$1', $quoted);
+            }
+        }
+
+        return $messages;
+    }
+
+    private function testLogger(): Logger
+    {
+        $logger = Craft::getLogger();
+        $this->assertInstanceOf(Logger::class, $logger);
+
+        return $logger;
     }
 
     private function setEnvironmentKey(?string $key): void
