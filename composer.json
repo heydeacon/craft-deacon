@@ -1,0 +1,76 @@
+{
+    "name": "heydeacon/craft-deacon",
+    "description": "Craft CMS plugin that adds Deacon, an AI support chat that answers from your docs, to every page.",
+    "type": "craft-plugin",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "deacon",
+        "chat widget",
+        "support",
+        "ai",
+        "chatbot",
+        "ai-chatbot",
+        "ask-ai",
+        "support-chat"
+    ],
+    "homepage": "https://heydeacon.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Deacon",
+            "email": "hello@heydeacon.com",
+            "homepage": "https://heydeacon.com"
+        }
+    ],
+    "support": {
+        "email": "hello@heydeacon.com",
+        "issues": "https://github.com/heydeacon/craft-deacon/issues",
+        "source": "https://github.com/heydeacon/craft-deacon",
+        "docs": "https://github.com/heydeacon/craft-deacon/blob/main/README.md"
+    },
+    "require": {
+        "php": "^8.2",
+        "craftcms/cms": "^5.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "heydeacon\\deacon\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "heydeacon\\deacon\\tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "handle": "deacon",
+        "name": "Deacon",
+        "developer": "Deacon",
+        "developerUrl": "https://heydeacon.com",
+        "documentationUrl": "https://github.com/heydeacon/craft-deacon/blob/main/README.md",
+        "class": "heydeacon\\deacon\\Plugin"
+    },
+    "scripts": {
+        "test": "codecept run unit"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "craftcms/plugin-installer": true,
+            "yiisoft/yii2-composer": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require-dev": {
+        "behat/gherkin": "~4.11.0",
+        "codeception/codeception": "5.2.0",
+        "codeception/lib-innerbrowser": "4.0.1",
+        "codeception/module-asserts": "3.0.0",
+        "codeception/module-yii2": "1.1.9",
+        "vlucas/phpdotenv": "5.4.1"
+    }
+}

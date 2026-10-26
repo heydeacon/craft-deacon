@@ -1,0 +1,7 @@
+/vendor
+/composer.lock
+/.phpunit.cache
+/tests/_craft/storage/
+/tests/.env
+/tests/_support/_generated/
+/tests/_output/
