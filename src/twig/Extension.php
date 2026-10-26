@@ -49,20 +49,25 @@ class Extension extends AbstractExtension
             $attributes['data-context'] = json_encode($settings->context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
+        if ($settings->pageViews === false) {
+            $attributes['data-no-page-views'] = true;
+        }
+
         return new Markup($this->loaderTag($attributes), 'UTF-8');
     }
 
     /**
-     * The tag Install gives, with any of its other attributes between the key and async.
+     * The tag Install gives, with any of its other attributes between the key and async. An
+     * attribute that is true is written with no value, as async is.
      *
-     * @param  array<string, string>  $attributes
+     * @param  array<string, string|true>  $attributes
      */
     private function loaderTag(array $attributes): string
     {
         $rendered = '';
 
         foreach ($attributes as $name => $value) {
-            $rendered .= ' '.$name.'="'.Html::encode($value).'"';
+            $rendered .= $value === true ? ' '.$name : ' '.$name.'="'.Html::encode($value).'"';
         }
 
         return '<script src="'.self::LOADER_SRC.'"'.$rendered.' async></script>';

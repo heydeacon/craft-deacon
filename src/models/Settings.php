@@ -9,4 +9,6 @@ class Settings extends Model
     public string $key = '';
 
     public mixed $context = null;
+
+    public mixed $pageViews = true;
 }
