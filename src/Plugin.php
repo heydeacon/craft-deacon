@@ -51,7 +51,7 @@ class Plugin extends BasePlugin
     {
         $headEnd = stripos($event->output, '</head>');
 
-        if ($headEnd === false || str_contains($event->output, 'src="' . WidgetTag::LOADER_SRC . '"')) {
+        if ($headEnd === false || WidgetTag::isIn($event->output)) {
             return;
         }
 

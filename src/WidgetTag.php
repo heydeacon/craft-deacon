@@ -13,11 +13,19 @@ use yii\base\InvalidConfigException;
  */
 final class WidgetTag
 {
-    public const LOADER_SRC = 'https://heydeacon.com/widget/v1/loader.js';
+    private const LOADER_SRC = 'https://heydeacon.com/widget/v1/loader.js';
 
     private const MISSING_KEY = 'craft-deacon: the key is missing, so the page has no Deacon widget. Set '
         . 'DEACON_KEY in .env, or the key in Settings → Plugins → Deacon. In Deacon, open Install (the '
         . 'button at the top of the dashboard) and copy the data-key value from the snippet. It starts with pk_.';
+
+    /**
+     * Whether the HTML already loads Deacon, from this tag or the snippet pasted from Install.
+     */
+    public static function isIn(string $html): bool
+    {
+        return str_contains($html, 'src="' . self::LOADER_SRC . '"');
+    }
 
     /**
      * The tag, with the key from the settings, or from DEACON_KEY when they have none. With no

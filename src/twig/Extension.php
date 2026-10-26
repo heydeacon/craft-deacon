@@ -17,9 +17,6 @@ class Extension extends AbstractExtension
         ];
     }
 
-    /**
-     * The {{ deaconWidget() }} function.
-     */
     public function deaconWidget(): Markup
     {
         return new Markup(WidgetTag::html(Plugin::getInstance()->getSettings()), 'UTF-8');
