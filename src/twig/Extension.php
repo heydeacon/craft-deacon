@@ -24,7 +24,7 @@ class Extension extends AbstractExtension
      */
     public function deaconWidget(): Markup
     {
-        $key = Plugin::getInstance()->getSettings()->key;
+        $key = (string) App::parseEnv(Plugin::getInstance()->getSettings()->key);
 
         if ($key === '') {
             $key = (string) App::env('DEACON_KEY');

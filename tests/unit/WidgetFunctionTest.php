@@ -44,6 +44,21 @@ class WidgetFunctionTest extends TestCase
         );
     }
 
+    public function testItReadsAnEnvironmentVariableNamedInTheKeySetting(): void
+    {
+        $_SERVER['STAGING_DEACON_KEY'] = 'pk_from_named_variable';
+        Plugin::getInstance()->getSettings()->key = '$STAGING_DEACON_KEY';
+
+        try {
+            $this->assertSame(
+                '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_from_named_variable" async></script>',
+                $this->renderedFunction(),
+            );
+        } finally {
+            unset($_SERVER['STAGING_DEACON_KEY']);
+        }
+    }
+
     private function setEnvironmentKey(?string $key): void
     {
         if ($key === null) {
