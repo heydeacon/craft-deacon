@@ -102,15 +102,15 @@ class WidgetFunctionTest extends TestCase
         );
     }
 
-    public function testItRefusesAPageViewsThatIsntTrueOrFalse(): void
+    public function testItReadsPageViewsWrittenAsTextAsCraftReadsItsOwnSettings(): void
     {
-        $settings = Plugin::getInstance()->getSettings();
-        $settings->key = 'pk_test123';
-        $settings->pageViews = 'false';
+        // The control panel's switch sends "" or "1", and an environment variable is text.
+        Plugin::getInstance()->setSettings(['key' => 'pk_test123', 'pageViews' => 'false']);
 
         $this->assertSame(
-            [InvalidConfigException::class, 'craft-deacon: pageViews in config/deacon.php must be true or false.'],
-            $this->renderingError(),
+            '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" '
+            .'data-no-page-views async></script>',
+            $this->renderedFunction(),
         );
     }
 

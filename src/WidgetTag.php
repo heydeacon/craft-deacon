@@ -45,17 +45,13 @@ final class WidgetTag
             );
         }
 
-        if (! is_bool($settings->pageViews)) {
-            throw new InvalidConfigException('craft-deacon: pageViews in config/deacon.php must be true or false.');
-        }
-
         $attributes = ['data-key' => $key];
 
         if ($settings->context !== null) {
             $attributes['data-context'] = json_encode($settings->context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
-        if ($settings->pageViews === false) {
+        if (! $settings->pageViews) {
             $attributes['data-no-page-views'] = true;
         }
 

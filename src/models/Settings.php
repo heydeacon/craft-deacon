@@ -10,7 +10,7 @@ class Settings extends Model
 
     public mixed $context = null;
 
-    public mixed $pageViews = true;
+    public bool $pageViews = true;
 
     public bool $addToEveryPage = true;
 }
