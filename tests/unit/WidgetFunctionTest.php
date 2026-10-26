@@ -61,7 +61,17 @@ class WidgetFunctionTest extends TestCase
         }
     }
 
-    private const MISSING_KEY = 'craft-deacon: the key is missing, so the page has no Deacon widget. Set '
+    public function testItTrimsSpacesPastedAroundTheKey(): void
+    {
+        Plugin::getInstance()->getSettings()->key = "  pk_test123\n";
+
+        $this->assertSame(
+            '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" async></script>',
+            $this->renderedFunction(),
+        );
+    }
+
+    private const MISSING_KEY ='craft-deacon: the key is missing, so the page has no Deacon widget. Set '
         .'DEACON_KEY in .env, or the key in Settings → Plugins → Deacon. In Deacon, open Install (the '
         .'button at the top of the dashboard) and copy the data-key value from the snippet. It starts with pk_.';
 

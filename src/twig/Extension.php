@@ -29,13 +29,13 @@ class Extension extends AbstractExtension
      */
     public function deaconWidget(): Markup
     {
-        $key = (string) App::parseEnv(Plugin::getInstance()->getSettings()->key);
+        $key = trim((string) App::parseEnv(Plugin::getInstance()->getSettings()->key));
 
         if ($key === '') {
-            $key = (string) App::env('DEACON_KEY');
+            $key = trim((string) App::env('DEACON_KEY'));
         }
 
-        if (trim($key) === '') {
+        if ($key === '') {
             Craft::warning(self::MISSING_KEY, 'deacon');
 
             return new Markup('', 'UTF-8');
