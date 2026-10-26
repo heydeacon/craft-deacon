@@ -9,6 +9,7 @@ use heydeacon\deacon\Plugin;
 use Twig\Extension\AbstractExtension;
 use Twig\Markup;
 use Twig\TwigFunction;
+use yii\base\InvalidConfigException;
 
 class Extension extends AbstractExtension
 {
@@ -43,6 +44,16 @@ class Extension extends AbstractExtension
             return new Markup('', 'UTF-8');
         }
 
+        if ($settings->context !== null && ! $this->isContext($settings->context)) {
+            throw new InvalidConfigException(
+                'craft-deacon: context in config/deacon.php must be an array of names to strings, numbers or booleans.'
+            );
+        }
+
+        if (! is_bool($settings->pageViews)) {
+            throw new InvalidConfigException('craft-deacon: pageViews in config/deacon.php must be true or false.');
+        }
+
         $attributes = ['data-key' => $key];
 
         if ($settings->context !== null) {
@@ -54,6 +65,24 @@ class Extension extends AbstractExtension
         }
 
         return new Markup($this->loaderTag($attributes), 'UTF-8');
+    }
+
+    /**
+     * @phpstan-assert-if-true array<string, string|int|float|bool> $context
+     */
+    private function isContext(mixed $context): bool
+    {
+        if (! is_array($context)) {
+            return false;
+        }
+
+        foreach ($context as $name => $value) {
+            if (! is_string($name) || ! (is_string($value) || is_int($value) || is_float($value) || is_bool($value))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

@@ -8,6 +8,7 @@ use craft\web\View;
 use heydeacon\deacon\models\Settings;
 use heydeacon\deacon\Plugin;
 use UnitTester;
+use yii\base\InvalidConfigException;
 use Codeception\Lib\Connector\Yii2\Logger;
 
 class WidgetFunctionTest extends TestCase
@@ -101,6 +102,49 @@ class WidgetFunctionTest extends TestCase
         );
     }
 
+    public function testItRefusesAPageViewsThatIsntTrueOrFalse(): void
+    {
+        $settings = Plugin::getInstance()->getSettings();
+        $settings->key = 'pk_test123';
+        $settings->pageViews = 'false';
+
+        $this->assertSame(
+            [InvalidConfigException::class, 'craft-deacon: pageViews in config/deacon.php must be true or false.'],
+            $this->renderingError(),
+        );
+    }
+
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function wrongContexts(): array
+    {
+        return [
+            'a string' => ['plan=pro'],
+            'a list' => [['docs']],
+            'an array with a nested value' => [['plan' => ['tier' => 'pro']]],
+            'an array with a null value' => [['plan' => null]],
+        ];
+    }
+
+    /**
+     * @dataProvider wrongContexts
+     */
+    public function testItRefusesAContextThatIsntNamesToStringsNumbersOrBooleans(mixed $context): void
+    {
+        $settings = Plugin::getInstance()->getSettings();
+        $settings->key = 'pk_test123';
+        $settings->context = $context;
+
+        $this->assertSame(
+            [
+                InvalidConfigException::class,
+                'craft-deacon: context in config/deacon.php must be an array of names to strings, numbers or booleans.',
+            ],
+            $this->renderingError(),
+        );
+    }
+
     public function testItTrimsSpacesPastedAroundTheKey(): void
     {
         Plugin::getInstance()->getSettings()->key = "  pk_test123\n";
@@ -177,6 +221,27 @@ class WidgetFunctionTest extends TestCase
         putenv("DEACON_KEY={$key}");
         $_ENV['DEACON_KEY'] = $key;
         $_SERVER['DEACON_KEY'] = $key;
+    }
+
+    /**
+     * The class and message of the error that stopped the template rendering, under the
+     * error Twig wraps it in.
+     *
+     * @return array{class-string, string}|null
+     */
+    private function renderingError(): ?array
+    {
+        try {
+            $this->renderedFunction();
+        } catch (\Throwable $error) {
+            while ($error->getPrevious() !== null) {
+                $error = $error->getPrevious();
+            }
+
+            return [$error::class, $error->getMessage()];
+        }
+
+        return null;
     }
 
     /**
