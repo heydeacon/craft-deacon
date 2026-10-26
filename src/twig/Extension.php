@@ -2,6 +2,7 @@
 
 namespace heydeacon\deacon\twig;
 
+use craft\helpers\App;
 use heydeacon\deacon\Plugin;
 use Twig\Extension\AbstractExtension;
 use Twig\Markup;
@@ -24,6 +25,10 @@ class Extension extends AbstractExtension
     public function deaconWidget(): Markup
     {
         $key = Plugin::getInstance()->getSettings()->key;
+
+        if ($key === '') {
+            $key = (string) App::env('DEACON_KEY');
+        }
 
         return new Markup('<script src="'.self::LOADER_SRC.'" data-key="'.$key.'" async></script>', 'UTF-8');
     }
