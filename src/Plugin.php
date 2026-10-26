@@ -33,13 +33,14 @@ class Plugin extends BasePlugin
     }
 
     /**
-     * Puts the tag before the page's </head>.
+     * Puts the tag before the page's </head>, unless the template printed it already, with
+     * {{ deaconWidget() }} or the snippet from Install.
      */
     private function addTagToPage(TemplateEvent $event): void
     {
         $headEnd = stripos($event->output, '</head>');
 
-        if ($headEnd === false) {
+        if ($headEnd === false || str_contains($event->output, 'src="'.WidgetTag::LOADER_SRC.'"')) {
             return;
         }
 

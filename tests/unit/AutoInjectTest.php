@@ -29,6 +29,16 @@ class AutoInjectTest extends TestCase
         );
     }
 
+    public function testItAddsNothingWhenTheTemplatePrintsTheTagItself(): void
+    {
+        $this->assertSame(
+            '<html><head><title>Page</title>'
+            .'<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" async></script>'
+            .'</head><body></body></html>',
+            $this->renderedPage('page-with-function'),
+        );
+    }
+
     /**
      * A site front-end page, rendered the way Craft renders one for a request.
      */
