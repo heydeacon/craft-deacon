@@ -61,6 +61,20 @@ class WidgetFunctionTest extends TestCase
         }
     }
 
+    public function testItPassesTheContextToDeaconAsTheDataContextAttribute(): void
+    {
+        $settings = Plugin::getInstance()->getSettings();
+        $settings->key = 'pk_test123';
+        $settings->context = ['site' => 'docs', 'version' => '3.2', 'beta' => true];
+
+        $this->assertSame(
+            '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" '
+            .'data-context="{&quot;site&quot;:&quot;docs&quot;,&quot;version&quot;:&quot;3.2&quot;,'
+            .'&quot;beta&quot;:true}" async></script>',
+            $this->renderedFunction(),
+        );
+    }
+
     public function testItTrimsSpacesPastedAroundTheKey(): void
     {
         Plugin::getInstance()->getSettings()->key = "  pk_test123\n";

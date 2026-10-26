@@ -4,6 +4,7 @@ namespace heydeacon\deacon\twig;
 
 use Craft;
 use craft\helpers\App;
+use craft\helpers\Html;
 use heydeacon\deacon\Plugin;
 use Twig\Extension\AbstractExtension;
 use Twig\Markup;
@@ -29,7 +30,8 @@ class Extension extends AbstractExtension
      */
     public function deaconWidget(): Markup
     {
-        $key = trim((string) App::parseEnv(Plugin::getInstance()->getSettings()->key));
+        $settings = Plugin::getInstance()->getSettings();
+        $key = trim((string) App::parseEnv($settings->key));
 
         if ($key === '') {
             $key = trim((string) App::env('DEACON_KEY'));
@@ -41,6 +43,28 @@ class Extension extends AbstractExtension
             return new Markup('', 'UTF-8');
         }
 
-        return new Markup('<script src="'.self::LOADER_SRC.'" data-key="'.$key.'" async></script>', 'UTF-8');
+        $attributes = ['data-key' => $key];
+
+        if ($settings->context !== null) {
+            $attributes['data-context'] = json_encode($settings->context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        return new Markup($this->loaderTag($attributes), 'UTF-8');
+    }
+
+    /**
+     * The tag Install gives, with any of its other attributes between the key and async.
+     *
+     * @param  array<string, string>  $attributes
+     */
+    private function loaderTag(array $attributes): string
+    {
+        $rendered = '';
+
+        foreach ($attributes as $name => $value) {
+            $rendered .= ' '.$name.'="'.Html::encode($value).'"';
+        }
+
+        return '<script src="'.self::LOADER_SRC.'"'.$rendered.' async></script>';
     }
 }
