@@ -4,21 +4,15 @@ namespace heydeacon\deacon\tests\unit;
 
 use Craft;
 use craft\events\RegisterTemplateRootsEvent;
-use craft\test\TestCase;
 use craft\web\View;
-use heydeacon\deacon\models\Settings;
-use heydeacon\deacon\Plugin;
-use UnitTester;
 use yii\base\Event;
 
-class AutoInjectTest extends TestCase
+class AutoInjectTest extends \DeaconTestCase
 {
-    protected UnitTester $tester;
-
     protected function _before(): void
     {
-        Plugin::getInstance()->getSettings()->setAttributes((new Settings())->getAttributes(), false);
-        Plugin::getInstance()->getSettings()->key = 'pk_test123';
+        parent::_before();
+        $this->settings()->key = 'pk_test123';
     }
 
     public function testItAddsTheTagToTheHeadOfEverySitePage(): void
@@ -43,7 +37,7 @@ class AutoInjectTest extends TestCase
 
     public function testItLeavesThePageAloneWhenAddingToEveryPageIsTurnedOff(): void
     {
-        Plugin::getInstance()->getSettings()->addToEveryPage = false;
+        $this->settings()->addToEveryPage = false;
 
         $this->assertSame('<html><head><title>Page</title></head><body></body></html>', $this->renderedPage('page'));
     }

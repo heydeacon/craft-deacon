@@ -3,15 +3,11 @@
 namespace heydeacon\deacon\tests\unit;
 
 use Craft;
-use craft\test\TestCase;
 use craft\web\View;
 use heydeacon\deacon\Plugin;
-use UnitTester;
 
-class SettingsPageTest extends TestCase
+class SettingsPageTest extends \DeaconTestCase
 {
-    protected UnitTester $tester;
-
     public function testTheSettingsPageShowsEachSettingWithItsValue(): void
     {
         Plugin::getInstance()->setSettings(['key' => '$DEACON_KEY', 'addToEveryPage' => false, 'pageViews' => true]);
@@ -32,7 +28,7 @@ class SettingsPageTest extends TestCase
     {
         $html = Craft::$app->getView()->renderTemplate(
             'deacon/_settings',
-            ['settings' => Plugin::getInstance()->getSettings()],
+            ['settings' => $this->settings()],
             View::TEMPLATE_MODE_CP,
         );
 

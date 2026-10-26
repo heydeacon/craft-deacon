@@ -4,32 +4,21 @@ namespace heydeacon\deacon\tests\unit;
 
 use Codeception\Lib\Connector\Yii2\Logger;
 use Craft;
-use craft\test\TestCase;
 use craft\web\View;
-use heydeacon\deacon\models\Settings;
 use heydeacon\deacon\Plugin;
-use UnitTester;
 use yii\base\InvalidConfigException;
 
-class WidgetFunctionTest extends TestCase
+class WidgetFunctionTest extends \DeaconTestCase
 {
-    protected UnitTester $tester;
-
     protected function _before(): void
     {
+        parent::_before();
         $this->codeceptionLogger()->getAndClearLog();
-        $this->setEnvironmentKey(null);
-        Plugin::getInstance()->getSettings()->setAttributes((new Settings())->getAttributes(), false);
-    }
-
-    protected function _after(): void
-    {
-        $this->setEnvironmentKey(null);
     }
 
     public function testItPrintsTheTagFromInstallWithTheKeyFromTheSettings(): void
     {
-        Plugin::getInstance()->getSettings()->key = 'pk_test123';
+        $this->settings()->key = 'pk_test123';
 
         $this->assertSame(
             '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" async></script>',
@@ -50,7 +39,7 @@ class WidgetFunctionTest extends TestCase
     public function testItReadsAnEnvironmentVariableNamedInTheKeySetting(): void
     {
         $_SERVER['STAGING_DEACON_KEY'] = 'pk_from_named_variable';
-        Plugin::getInstance()->getSettings()->key = '$STAGING_DEACON_KEY';
+        $this->settings()->key = '$STAGING_DEACON_KEY';
 
         try {
             $this->assertSame(
@@ -64,7 +53,7 @@ class WidgetFunctionTest extends TestCase
 
     public function testItPassesTheContextToDeaconAsTheDataContextAttribute(): void
     {
-        $settings = Plugin::getInstance()->getSettings();
+        $settings = $this->settings();
         $settings->key = 'pk_test123';
         $settings->context = ['site' => 'docs', 'version' => '3.2', 'beta' => true];
 
@@ -78,7 +67,7 @@ class WidgetFunctionTest extends TestCase
 
     public function testItKeepsAContextValueThatLooksLikeHtmlAsItWasWritten(): void
     {
-        $settings = Plugin::getInstance()->getSettings();
+        $settings = $this->settings();
         $settings->key = 'pk_test123';
         $settings->context = ['note' => '</script><b>"hi" &amp;</b>'];
 
@@ -91,7 +80,7 @@ class WidgetFunctionTest extends TestCase
 
     public function testItHoldsBackPageViewsWithTheDataNoPageViewsAttribute(): void
     {
-        $settings = Plugin::getInstance()->getSettings();
+        $settings = $this->settings();
         $settings->key = 'pk_test123';
         $settings->pageViews = false;
 
@@ -132,7 +121,7 @@ class WidgetFunctionTest extends TestCase
      */
     public function testItRefusesAContextWhoseValuesArentStringsNumbersOrBooleans(mixed $context): void
     {
-        $settings = Plugin::getInstance()->getSettings();
+        $settings = $this->settings();
         $settings->key = 'pk_test123';
         $settings->context = $context;
 
@@ -147,7 +136,7 @@ class WidgetFunctionTest extends TestCase
 
     public function testItTrimsSpacesPastedAroundTheKey(): void
     {
-        Plugin::getInstance()->getSettings()->key = "  pk_test123\n";
+        $this->settings()->key = "  pk_test123\n";
 
         $this->assertSame(
             '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" async></script>',
@@ -176,7 +165,7 @@ class WidgetFunctionTest extends TestCase
      */
     public function testItPrintsNothingAndLogsAWarningWhenTheKeyIsMissing(string $key): void
     {
-        Plugin::getInstance()->getSettings()->key = $key;
+        $this->settings()->key = $key;
 
         $this->assertSame(['', [self::MISSING_KEY]], [$this->renderedFunction(), $this->loggedMessages()]);
     }
@@ -209,19 +198,6 @@ class WidgetFunctionTest extends TestCase
         return $logger;
     }
 
-    private function setEnvironmentKey(?string $key): void
-    {
-        if ($key === null) {
-            putenv('DEACON_KEY');
-            unset($_ENV['DEACON_KEY'], $_SERVER['DEACON_KEY']);
-
-            return;
-        }
-
-        putenv("DEACON_KEY={$key}");
-        $_ENV['DEACON_KEY'] = $key;
-        $_SERVER['DEACON_KEY'] = $key;
-    }
 
     /**
      * The class and message of the error that stopped the template rendering, under the
