@@ -75,6 +75,32 @@ class WidgetFunctionTest extends TestCase
         );
     }
 
+    public function testItKeepsAContextValueThatLooksLikeHtmlAsItWasWritten(): void
+    {
+        $settings = Plugin::getInstance()->getSettings();
+        $settings->key = 'pk_test123';
+        $settings->context = ['note' => '</script><b>"hi" &amp;</b>'];
+
+        $document = new \DOMDocument();
+        $document->loadHTML($this->renderedFunction(), LIBXML_NOERROR);
+        $script = $document->getElementsByTagName('script')->item(0);
+
+        $this->assertSame('{"note":"</script><b>\"hi\" &amp;</b>"}', $script?->getAttribute('data-context'));
+    }
+
+    public function testItHoldsBackPageViewsWithTheDataNoPageViewsAttribute(): void
+    {
+        $settings = Plugin::getInstance()->getSettings();
+        $settings->key = 'pk_test123';
+        $settings->pageViews = false;
+
+        $this->assertSame(
+            '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" '
+            .'data-no-page-views async></script>',
+            $this->renderedFunction(),
+        );
+    }
+
     public function testItTrimsSpacesPastedAroundTheKey(): void
     {
         Plugin::getInstance()->getSettings()->key = "  pk_test123\n";
