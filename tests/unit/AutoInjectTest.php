@@ -39,6 +39,13 @@ class AutoInjectTest extends TestCase
         );
     }
 
+    public function testItLeavesThePageAloneWhenAddingToEveryPageIsTurnedOff(): void
+    {
+        Plugin::getInstance()->getSettings()->addToEveryPage = false;
+
+        $this->assertSame('<html><head><title>Page</title></head><body></body></html>', $this->renderedPage('page'));
+    }
+
     /**
      * A site front-end page, rendered the way Craft renders one for a request.
      */
