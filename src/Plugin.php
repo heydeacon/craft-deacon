@@ -16,6 +16,8 @@ use yii\base\Event;
  */
 class Plugin extends BasePlugin
 {
+    public bool $hasCpSettings = true;
+
     public function init(): void
     {
         parent::init();
@@ -32,6 +34,13 @@ class Plugin extends BasePlugin
     protected function createSettingsModel(): ?Model
     {
         return new Settings();
+    }
+
+    protected function settingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate('deacon/_settings', [
+            'settings' => $this->getSettings(),
+        ]);
     }
 
     /**

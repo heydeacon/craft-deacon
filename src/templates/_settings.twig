@@ -1,0 +1,27 @@
+{% import '_includes/forms.twig' as forms %}
+
+{{ forms.autosuggestField({
+    label: 'Key',
+    instructions: 'Your Deacon key. In Deacon, open Install (the button at the top of the dashboard) and copy the `data-key` value from the snippet. It starts with `pk_`. Leave it empty to use the `DEACON_KEY` environment variable.',
+    id: 'key',
+    name: 'key',
+    value: settings.key,
+    suggestEnvVars: true,
+    placeholder: 'pk_…',
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Add Deacon to every page',
+    instructions: 'Puts the widget in the `<head>` of every page of your site. Turn this off to place it yourself with `{{ deaconWidget() }}`.',
+    id: 'addToEveryPage',
+    name: 'addToEveryPage',
+    on: settings.addToEveryPage,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Count page views',
+    instructions: 'The same script counts visits for Deacon’s website analytics. Turn this off to send no page views or JavaScript errors from your site. Chat still works.',
+    id: 'pageViews',
+    name: 'pageViews',
+    on: settings.pageViews,
+}) }}
