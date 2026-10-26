@@ -2,6 +2,7 @@
 
 namespace heydeacon\deacon\tests\unit;
 
+use Codeception\Lib\Connector\Yii2\Logger;
 use Craft;
 use craft\test\TestCase;
 use craft\web\View;
@@ -9,7 +10,6 @@ use heydeacon\deacon\models\Settings;
 use heydeacon\deacon\Plugin;
 use UnitTester;
 use yii\base\InvalidConfigException;
-use Codeception\Lib\Connector\Yii2\Logger;
 
 class WidgetFunctionTest extends TestCase
 {
@@ -17,7 +17,7 @@ class WidgetFunctionTest extends TestCase
 
     protected function _before(): void
     {
-        $this->testLogger()->getAndClearLog();
+        $this->codeceptionLogger()->getAndClearLog();
         $this->setEnvironmentKey(null);
         Plugin::getInstance()->getSettings()->setAttributes((new Settings())->getAttributes(), false);
     }
@@ -70,8 +70,8 @@ class WidgetFunctionTest extends TestCase
 
         $this->assertSame(
             '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" '
-            .'data-context="{&quot;site&quot;:&quot;docs&quot;,&quot;version&quot;:&quot;3.2&quot;,'
-            .'&quot;beta&quot;:true}" async></script>',
+            . 'data-context="{&quot;site&quot;:&quot;docs&quot;,&quot;version&quot;:&quot;3.2&quot;,'
+            . '&quot;beta&quot;:true}" async></script>',
             $this->renderedFunction(),
         );
     }
@@ -97,7 +97,7 @@ class WidgetFunctionTest extends TestCase
 
         $this->assertSame(
             '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" '
-            .'data-no-page-views async></script>',
+            . 'data-no-page-views async></script>',
             $this->renderedFunction(),
         );
     }
@@ -109,7 +109,7 @@ class WidgetFunctionTest extends TestCase
 
         $this->assertSame(
             '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_test123" '
-            .'data-no-page-views async></script>',
+            . 'data-no-page-views async></script>',
             $this->renderedFunction(),
         );
     }
@@ -155,9 +155,9 @@ class WidgetFunctionTest extends TestCase
         );
     }
 
-    private const MISSING_KEY ='craft-deacon: the key is missing, so the page has no Deacon widget. Set '
-        .'DEACON_KEY in .env, or the key in Settings → Plugins → Deacon. In Deacon, open Install (the '
-        .'button at the top of the dashboard) and copy the data-key value from the snippet. It starts with pk_.';
+    private const MISSING_KEY = 'craft-deacon: the key is missing, so the page has no Deacon widget. Set '
+        . 'DEACON_KEY in .env, or the key in Settings → Plugins → Deacon. In Deacon, open Install (the '
+        . 'button at the top of the dashboard) and copy the data-key value from the snippet. It starts with pk_.';
 
     /**
      * @return array<string, array{string}>
@@ -191,7 +191,7 @@ class WidgetFunctionTest extends TestCase
     {
         $messages = [];
 
-        foreach (explode(PHP_EOL, $this->testLogger()->getAndClearLog()) as $line) {
+        foreach (explode(PHP_EOL, $this->codeceptionLogger()->getAndClearLog()) as $line) {
             if (str_starts_with($line, "[deacon] '") && str_ends_with($line, "'")) {
                 $quoted = substr($line, strlen("[deacon] '"), -1);
                 $messages[] = preg_replace('/\\\\([\'\\\\])/', '$1', $quoted);
@@ -201,7 +201,7 @@ class WidgetFunctionTest extends TestCase
         return $messages;
     }
 
-    private function testLogger(): Logger
+    private function codeceptionLogger(): Logger
     {
         $logger = Craft::getLogger();
         $this->assertInstanceOf(Logger::class, $logger);

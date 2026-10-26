@@ -37,7 +37,7 @@ class SettingsPageTest extends TestCase
         );
 
         $document = new \DOMDocument();
-        $document->loadHTML('<?xml encoding="utf-8"?><div>'.$html.'</div>', LIBXML_NOERROR);
+        $document->loadHTML('<?xml encoding="utf-8"?><div>' . $html . '</div>', LIBXML_NOERROR);
 
         $values = [];
 

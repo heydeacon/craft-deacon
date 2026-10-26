@@ -16,8 +16,8 @@ final class WidgetTag
     public const LOADER_SRC = 'https://heydeacon.com/widget/v1/loader.js';
 
     private const MISSING_KEY = 'craft-deacon: the key is missing, so the page has no Deacon widget. Set '
-        .'DEACON_KEY in .env, or the key in Settings → Plugins → Deacon. In Deacon, open Install (the '
-        .'button at the top of the dashboard) and copy the data-key value from the snippet. It starts with pk_.';
+        . 'DEACON_KEY in .env, or the key in Settings → Plugins → Deacon. In Deacon, open Install (the '
+        . 'button at the top of the dashboard) and copy the data-key value from the snippet. It starts with pk_.';
 
     /**
      * The tag, with the key from the settings, or from DEACON_KEY when they have none. With no
@@ -39,7 +39,7 @@ final class WidgetTag
             return '';
         }
 
-        if ($settings->context !== null && ! self::isContext($settings->context)) {
+        if ($settings->context !== null && !self::isContext($settings->context)) {
             throw new InvalidConfigException(
                 'craft-deacon: context in config/deacon.php must be an array of names to strings, numbers or booleans.'
             );
@@ -51,7 +51,7 @@ final class WidgetTag
             $attributes['data-context'] = json_encode($settings->context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
-        if (! $settings->pageViews) {
+        if (!$settings->pageViews) {
             $attributes['data-no-page-views'] = true;
         }
 
@@ -63,12 +63,12 @@ final class WidgetTag
      */
     private static function isContext(mixed $context): bool
     {
-        if (! is_array($context)) {
+        if (!is_array($context)) {
             return false;
         }
 
         foreach ($context as $name => $value) {
-            if (! is_string($name) || ! (is_string($value) || is_int($value) || is_float($value) || is_bool($value))) {
+            if (!is_string($name) || !(is_string($value) || is_int($value) || is_float($value) || is_bool($value))) {
                 return false;
             }
         }
@@ -87,9 +87,9 @@ final class WidgetTag
         $rendered = '';
 
         foreach ($attributes as $name => $value) {
-            $rendered .= $value === true ? ' '.$name : ' '.$name.'="'.Html::encode($value).'"';
+            $rendered .= $value === true ? ' ' . $name : ' ' . $name . '="' . Html::encode($value) . '"';
         }
 
-        return '<script src="'.self::LOADER_SRC.'"'.$rendered.' async></script>';
+        return '<script src="' . self::LOADER_SRC . '"' . $rendered . ' async></script>';
     }
 }
