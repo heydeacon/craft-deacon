@@ -36,6 +36,17 @@ class WidgetFunctionTest extends \DeaconTestCase
         );
     }
 
+    public function testItPrefersTheKeyInTheSettingsToDeaconKey(): void
+    {
+        $this->setEnvironmentKey('pk_from_env');
+        $this->settings()->key = 'pk_from_settings';
+
+        $this->assertSame(
+            '<script src="https://heydeacon.com/widget/v1/loader.js" data-key="pk_from_settings" async></script>',
+            $this->renderedFunction(),
+        );
+    }
+
     public function testItReadsAnEnvironmentVariableNamedInTheKeySetting(): void
     {
         $_SERVER['STAGING_DEACON_KEY'] = 'pk_from_named_variable';
